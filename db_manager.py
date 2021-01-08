@@ -1,3 +1,4 @@
+import re
 import string
 
 import aiomysql
@@ -25,6 +26,7 @@ def create_sync_con():
     cur = con.cursor()
     return con, cur
 
+
 class UsersDbManager:
     @staticmethod
     def clear():
@@ -47,11 +49,13 @@ class UsersDbManager:
     @staticmethod
     async def add_user(tel_id, name, phone_number, username, loop):
         con, cur = await create_con(loop)
-        await cur.execute('insert into reshalaa_bot.user values(%s, %s, %s, %s, %s, %s, %s)', (tel_id, name, phone_number, '', '', username, ''))
+        await cur.execute('insert into reshalaa_bot.user values(%s, %s, %s, %s, %s, %s, %s)',
+                          (tel_id, name, phone_number, '', '', username, ''))
         await con.commit()
         await cur.execute('insert into reshalaa_bot.bonuses values(%s, %s)',
                           (tel_id, 0))
         await con.commit()
+
         con.close()
 
     @staticmethod
@@ -65,7 +69,6 @@ class UsersDbManager:
             return None
 
         return user
-
 
     @staticmethod
     async def update_context(tel_id, context, loop):
@@ -86,8 +89,9 @@ class UsersDbManager:
         con, cur = await create_con(loop)
         await cur.execute('select username from user where tel_id = %s', (tel_id))
         username = await cur.fetchone()
-        await cur.execute('insert into reshalaa_bot.db_manager_order values(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)',
-                          (None, tel_id, type, '', '', '', '', '', '', '', '', '', username[0]))
+        await cur.execute(
+            'insert into reshalaa_bot.db_manager_order values(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)',
+            (None, tel_id, type, '', '', '', '', '', '', '', '', '', username[0]))
         await con.commit()
         con.close()
 
@@ -149,7 +153,8 @@ class UsersDbManager:
         time = time.replace('_', '')
         await cur.execute('select max(ord_id) from reshalaa_bot.db_manager_order where tel_id = {0}'.format(tel_id))
         ord_id = await cur.fetchone()
-        await cur.execute('update reshalaa_bot.db_manager_order set end_contr = %s where ord_id = %s', (time, ord_id[0]))
+        await cur.execute('update reshalaa_bot.db_manager_order set end_contr = %s where ord_id = %s',
+                          (time, ord_id[0]))
         await con.commit()
         con.close()
 
@@ -225,17 +230,17 @@ class UsersDbManager:
         con.close()
 
     @staticmethod
-    async def update_links(ord_id, photo, loop):
+    async def update_links(ord_id, photo, tel_id, loop):
         con, cur = await create_con(loop)
         link = ' , ' + photo
         try:
             await cur.execute('update reshalaa_bot.db_manager_order set links = CONCAT(links, %s) where ord_id = %s',
                               (link, ord_id))
             await con.commit()
+
             return True
 
         except aiomysql.connection.Error as error:
-            print(error)
             return False
 
         finally:
@@ -263,7 +268,7 @@ class UsersDbManager:
     @staticmethod
     async def get_o_orders(tel_id, loop):
         con, cur = await create_con(loop)
-        await cur.execute('select * from reshalaa_bot.db_manager_order where tel_id = {0}'.format(tel_id))
+        await cur.execute('select * from reshalaa_bot.db_manager_doneo where tel_id = {0}'.format(tel_id))
         context = await cur.fetchall()
         con.close()
         if len(context) < 1:
@@ -273,21 +278,44 @@ class UsersDbManager:
     @staticmethod
     async def get_act_orders(tel_id, loop):
         con, cur = await create_con(loop)
+        all = []
+
         await cur.execute('select * from reshalaa_bot.db_manager_order where tel_id = {0}'.format(tel_id))
         context = await cur.fetchall()
+        all.append(context)
+
+        await cur.execute('select * from reshalaa_bot.db_manager_priceo where tel_id = {0}'.format(tel_id))
+        context = await cur.fetchall()
+        all.append(context)
+
+        await cur.execute('select * from reshalaa_bot.db_manager_activeo where tel_id = {0}'.format(tel_id))
+        context = await cur.fetchall()
+        all.append(context)
+
+        await cur.execute('select * from reshalaa_bot.db_manager_waito where tel_id = {0}'.format(tel_id))
+        context = await cur.fetchall()
+        all.append(context)
+
         con.close()
-        if len(context) < 1:
+
+        ret_all = []
+
+        for el in all:
+            if len(el) is not 0:
+                ret_all.append(el[0])
+
+        if len(ret_all) < 1:
             return False
-        return context
+        return ret_all
 
     @staticmethod
     def sync_get_type(tel_id):
         con, cur = create_sync_con()
         cur.execute('select max(ord_id) from reshalaa_bot.db_manager_order where tel_id = {0}'.format(tel_id))
-        context =  cur.fetchone()
+        context = cur.fetchone()
         cur.execute(
             'select type from reshalaa_bot.db_manager_order where ord_id={0}'.format(context[0]))
-        context =  cur.fetchone()
+        context = cur.fetchone()
 
         con.close()
 
@@ -321,16 +349,15 @@ class UsersDbManager:
             return None
         return context[0]
 
-
     '''
     AUTHORS
     '''
 
     @staticmethod
-    async def add_author(tel_id, phone_number, username,loop):
+    async def add_author(tel_id, phone_number, username, loop):
         con, cur = await create_con(loop)
-        await cur.execute('insert into reshalaa_bot.authors values(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)',
-                          (tel_id, phone_number, '', '', '', '', '', '', '', username, 0, ''))
+        await cur.execute('insert into reshalaa_bot.authors values(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)',
+                          (str(tel_id), str(phone_number), '', '', '', None, '', '', '', str(username), '0', '', '0'))
         await con.commit()
         con.close()
 
@@ -384,7 +411,6 @@ class UsersDbManager:
             return True
 
         except aiomysql.connection.Error as error:
-            print(error)
             return False
 
         finally:
@@ -410,7 +436,8 @@ class UsersDbManager:
     async def update_predm_a(tel_id, predm, loop):
         con, cur = await create_con(loop)
         predm = ',' + predm
-        await cur.execute('update reshalaa_bot.authors set predm = CONCAT(predm, %s) where tel_id = %s', (predm, tel_id))
+        await cur.execute('update reshalaa_bot.authors set predm = CONCAT(predm, %s) where tel_id = %s',
+                          (predm, tel_id))
         await con.commit()
         con.close()
 
@@ -461,7 +488,8 @@ class UsersDbManager:
         await cur.execute('select num from reshalaa_bot.authors where tel_id = {0}'.format(tel_id))
         ord_id = await cur.fetchone()
 
-        await cur.execute('update reshalaa_bot.db_manager_ord_auth_price set price = %s where ord_id=%s',(price, ord_id[0]))
+        await cur.execute('update reshalaa_bot.db_manager_ord_auth_price set price = %s where ord_id=%s',
+                          (price, ord_id[0]))
         await con.commit()
 
         con.close()
@@ -471,7 +499,8 @@ class UsersDbManager:
         con, cur = await create_con(loop)
         await cur.execute('select num from reshalaa_bot.authors where tel_id = {0}'.format(tel_id))
         ord_id = await cur.fetchone()
-        await cur.execute('update reshalaa_bot.db_manager_ord_auth_price set com = %s where ord_id=%s',(com, ord_id[0]))
+        await cur.execute('update reshalaa_bot.db_manager_ord_auth_price set com = %s where ord_id=%s',
+                          (com, ord_id[0]))
         await con.commit()
         con.close()
 
@@ -497,7 +526,8 @@ class UsersDbManager:
     @staticmethod
     async def get_a_price(ord_id, tel_id, loop):
         con, cur = await create_con(loop)
-        await cur.execute('select price from reshalaa_bot.db_manager_ord_auth_price where tel_id = %s and ord_id = %s', (tel_id, ord_id))
+        await cur.execute('select price from reshalaa_bot.db_manager_ord_auth_price where tel_id = %s and ord_id = %s',
+                          (tel_id, ord_id))
         context = await cur.fetchone()
         con.close()
         return context[0]
@@ -506,7 +536,8 @@ class UsersDbManager:
     async def get_all_order_for_time(loop):
         con, cur = await create_con(loop)
         curr_date = datetime.date.today()
-        await cur.execute(f'select * from reshalaa_bot.db_manager_order where type = "Online решение" and date = {curr_date}')
+        await cur.execute(
+            f'select * from reshalaa_bot.db_manager_order where type = "Online решение" and date = {curr_date}')
         orders = await cur.fetchall()
 
         full = []
@@ -542,9 +573,10 @@ class UsersDbManager:
     async def get_ord_auth_2(tel_id, loop):
         con, cur = await create_con(loop)
         date = datetime.date.today()
-        await cur.execute('select ord_id from reshalaa_bot.db_manager_order where ord_id = %s and type = "Online решение" and '
-                          'date = %s',
-                          (tel_id, date))
+        await cur.execute(
+            'select ord_id from reshalaa_bot.db_manager_order where ord_id = %s and type = "Online решение" and '
+            'date = %s',
+            (tel_id, date))
         context = await cur.fetchone()
         con.close()
         return context[0]
@@ -558,9 +590,10 @@ class UsersDbManager:
                           tel_id)
         ord_id = await cur.fetchone()
 
-        await cur.execute('select tel_id from reshalaa_bot.db_manager_order where ord_id = %s and type = "Online решение" and '
-                          'date = %s',
-                          (ord_id, date))
+        await cur.execute(
+            'select tel_id from reshalaa_bot.db_manager_order where ord_id = %s and type = "Online решение" and '
+            'date = %s',
+            (ord_id, date))
         context = await cur.fetchone()
         con.close()
         return context[0]
@@ -652,9 +685,13 @@ class UsersDbManager:
         con, cur = await create_con(loop)
         await cur.execute('select predm from reshalaa_bot.db_manager_order where ord_id = {0}'.format(ord_id))
         predm = await cur.fetchone()
-        predm = '%'+predm[0]+'%'
-        await cur.execute(f'SELECT tel_id FROM reshalaa_bot.authors where predm like "{predm}"')
+        predm = '%' + predm[0] + '%'
+        c = 'wait_confirm'
+        await cur.execute(f'SELECT tel_id FROM reshalaa_bot.authors where predm like "{predm}" and context != "{c}"')
         authors = await cur.fetchall()
+        if predm == 'Другое':
+            await cur.execute(f'SELECT tel_id FROM reshalaa_bot.authors')
+            authors = await cur.fetchall()
         con.close()
         return authors
 
@@ -749,7 +786,7 @@ class UsersDbManager:
     @staticmethod
     async def get_priceo_order(ord_id, loop):
         con, cur = await create_con(loop)
-        ord_id= ord_id[1:]
+        ord_id = ord_id[1:]
         await cur.execute(
             'select * from reshalaa_bot.db_manager_priceo where ord_id = {0}'.format(ord_id))
         cost = await cur.fetchone()
@@ -763,8 +800,11 @@ class UsersDbManager:
         await cur.execute(
             'select tel_id from reshalaa_bot.db_manager_priceo where ord_id = {0}'.format(ord_id))
         tel_id = await cur.fetchone()
+        await cur.execute(
+            'select tel_id from reshalaa_bot.db_manager_cust_pri where ord_id = {0}'.format(ord_id))
+        auth_id = await cur.fetchone()
         con.close()
-        return tel_id[0]
+        return tel_id[0], auth_id[0]
 
     @staticmethod
     async def get_customertwo(ord_id, loop):
@@ -790,9 +830,9 @@ class UsersDbManager:
         author = await cur.fetchone()
 
         await cur.execute('insert into reshalaa_bot.db_manager_activeo values (%s, %s, %s, %s, %s, %s, %s,'
-                    '%s, %s, %s, %s, %s, %s, %s, %s)',
-                    (info[0], info[1], info[2], info[3], info[4], info[5], info[6], info[7], info[8],
-                     info[9], info[10], info[11], info[12], payment, author))
+                          '%s, %s, %s, %s, %s, %s, %s, %s)',
+                          (info[0], info[1], info[2], info[3], info[4], info[5], info[6], info[7], info[8],
+                           info[9], info[10], info[11], info[12], payment, author))
         await con.commit()
 
         await cur.execute(
@@ -805,11 +845,13 @@ class UsersDbManager:
 
         await cur.execute('delete from reshalaa_bot.db_manager_cust_pri where ord_id = {0}'.format(ord_id))
         await con.commit()
+        await cur.execute('delete from reshalaa_bot.db_manager_order where ord_id = {0}'.format(ord_id))
+        await con.commit()
+        await cur.execute('delete from reshalaa_bot.db_manager_ord_auth_price where ord_id = {0}'.format(ord_id))
+        await con.commit()
+        await cur.execute('delete from reshalaa_bot.db_manager_priceo where ord_id = {0}'.format(ord_id))
+        await con.commit()
 
-        await cur.execute('delete from reshalaa_bot.db_manager_priceo where ord_id = {0}'.format(ord_id))
-        await con.commit()
-        await cur.execute('delete from reshalaa_bot.db_manager_priceo where ord_id = {0}'.format(ord_id))
-        await con.commit()
         con.close()
         return
 
@@ -837,8 +879,9 @@ class UsersDbManager:
     async def insert_author_links(ord_id, link, loop):
         con, cur = await create_con(loop)
         link = ' , ' + link
-        await cur.execute('update reshalaa_bot.db_manager_waito set author_links = CONCAT(author_links, %s) where ord_id=%s',
-                          (link, ord_id))
+        await cur.execute(
+            'update reshalaa_bot.db_manager_waito set author_links = CONCAT(author_links, %s) where ord_id=%s',
+            (link, ord_id))
         await con.commit()
         con.close()
         return
@@ -864,10 +907,12 @@ class UsersDbManager:
             'select customer_pr from reshalaa_bot.db_manager_customer_price where ord_id = {0}'.format(ord_id))
         price = await cur.fetchone()
 
+
+
         await cur.execute('insert into reshalaa_bot.db_manager_doneo values (%s, %s, %s, %s, %s, %s, %s,'
-                    '%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)',
-                    (info[0], info[1], info[2], info[3], info[4], info[5], info[6], info[7], info[8],
-                     price, info[10], info[11], info[12], info[13], info[14], otz, ''))
+                          '%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)',
+                          (info[0], info[1], info[2], info[3], info[4], info[5], info[6], info[7], info[8],
+                           info[9], price, info[11], info[12], info[13], info[14], info[15], otz, ''))
         await con.commit()
 
         await cur.execute('delete from reshalaa_bot.db_manager_activeo where ord_id = {0}'.format(ord_id))
@@ -882,7 +927,7 @@ class UsersDbManager:
         con, cur = await create_con(loop)
 
         await cur.execute('update reshalaa_bot.db_manager_doneo set com = %s where ord_id=%s',
-                          (payment, ord_id))
+                          (payment, ord_id[1:]))
         await con.commit()
         con.close()
         return
@@ -967,6 +1012,204 @@ class UsersDbManager:
         await cur.execute('delete from reshalaa_bot.db_manager_priceo where ord_id = {0}'.format(ord_id))
         await con.commit()
         await cur.execute('delete from reshalaa_bot.db_manager_customer_price where ord_id = {0}'.format(ord_id))
+        await con.commit()
+        con.close()
+        return
+
+    @staticmethod
+    async def get_author(tel_id, loop):
+        con, cur = await create_con(loop)
+        await cur.execute(
+            'select * from reshalaa_bot.authors where tel_id = {0}'.format(tel_id))
+        author = await cur.fetchone()
+        con.close()
+        return author
+
+    @staticmethod
+    async def get_rate(tel_id, loop):
+        con, cur = await create_con(loop)
+        await cur.execute(
+            'select username from reshalaa_bot.authors where tel_id = {0}'.format(tel_id))
+        username = await cur.fetchone()
+        await cur.execute(
+            f'select AVG(otz) from reshalaa_bot.db_manager_doneo where author = "{username[0]}"')
+        otz = await cur.fetchone()
+        con.close()
+        return otz
+
+    @staticmethod
+    async def delete_author(tel_id, loop):
+        con, cur = await create_con(loop)
+        await cur.execute(f'delete from reshalaa_bot.authors where tel_id = {tel_id}')
+        await con.commit()
+        con.close()
+        return
+
+    @staticmethod
+    async def otm_order(ord_id, loop):
+        ord_id = re.sub("\D", "", ord_id)
+        con, cur = await create_con(loop)
+        dthc = ''
+
+        all = []
+
+        await cur.execute('select * from reshalaa_bot.db_manager_order where ord_id = {0}'.format(ord_id))
+        context = await cur.fetchall()
+        all.append(context)
+        if len(all) is not 0:
+            dthc = 'db_manager_order'
+
+        await cur.execute('select * from reshalaa_bot.db_manager_priceo where ord_id = {0}'.format(ord_id))
+        context = await cur.fetchall()
+        all.append(context)
+        if len(all) is not 0:
+            dthc = 'db_manager_priceo'
+
+        await cur.execute('select * from reshalaa_bot.db_manager_activeo where ord_id = {0}'.format(ord_id))
+        context = await cur.fetchall()
+        all.append(context)
+        if len(all) is not 0:
+            dthc = 'db_manager_activeo'
+
+        await cur.execute('select * from reshalaa_bot.db_manager_waito where ord_id = {0}'.format(ord_id))
+        context = await cur.fetchall()
+        all.append(context)
+        if len(all) is not 0:
+            dthc = 'db_manager_waito'
+
+        ret_all = []
+        for el in all:
+            if len(el) is not 0:
+                ret_all.append(el[0])
+
+        pr_info = ret_all[0]
+
+        await cur.execute('insert into reshalaa_bot.db_manager_canceledo values (%s, %s, %s, %s, %s, %s, %s, %s, %s, '
+                          '%s, %s, %s, %s, %s, %s)',
+                          (pr_info[0], pr_info[1], pr_info[2], pr_info[3], pr_info[4], pr_info[5], pr_info[6],
+                           pr_info[7], pr_info[8], pr_info[9], pr_info[10], pr_info[11], pr_info[12], '',
+                           ''))
+        await con.commit()
+
+        await cur.execute(f'delete from reshalaa_bot.{dthc} where ord_id = {ord_id}')
+        await con.commit()
+
+        con.close()
+        return
+
+    @staticmethod
+    async def get_balance(tel_id, loop):
+        con, cur = await create_con(loop)
+        await cur.execute(
+            'select balance from reshalaa_bot.authors where tel_id = {0}'.format(tel_id))
+        bal = await cur.fetchone()
+        con.close()
+        return bal
+
+    @staticmethod
+    async def get_count(tel_id, loop):
+        con, cur = await create_con(loop)
+        await cur.execute(
+            'select countt from reshalaa_bot.count_files where tel_id = {0}'.format(tel_id))
+        bal = await cur.fetchone()
+        con.close()
+        return bal[0]
+
+    @staticmethod
+    async def author_exist(tel_id, loop):
+        con, cur = await create_con(loop)
+        await cur.execute('select count(*) from user where tel_id = %s', tel_id)
+        r = await cur.fetchone()
+        count = r[0]
+        if count > 0:
+            con.close()
+            return True
+        else:
+            await cur.execute(
+                'insert into reshalaa_bot.owner values (%s, %s, %s, %s)',
+                (tel_id, '', '', ''))
+            await con.commit()
+            con.close()
+            return
+
+    @staticmethod
+    async def update_context_owner(tel_id, context, loop):
+        con, cur = await create_con(loop)
+        await cur.execute('update reshalaa_bot.owner set context = %s where tel_id = %s', (context, tel_id))
+        await con.commit()
+        con.close()
+
+    @staticmethod
+    def sync_get_context_owner(tel_id):
+        con, cur = create_sync_con()
+        cur.execute('select context from owner where tel_id = {0}'.format(tel_id))
+        context = cur.fetchone()
+        con.close()
+        if context is None:
+            return None
+
+        return context[0]
+
+    @staticmethod
+    async def update_num_owner(tel_id, ord_id, m_id, loop):
+        con, cur = await create_con(loop)
+        await cur.execute('update reshalaa_bot.owner set ord_id = %s where tel_id = %s', (ord_id, tel_id))
+        await con.commit()
+        await cur.execute('update reshalaa_bot.owner set m_id = %s where tel_id = %s', (m_id, tel_id))
+        await con.commit()
+        con.close()
+
+    @staticmethod
+    async def get_num_owner(tel_id, loop):
+        con, cur = await create_con(loop)
+        await cur.execute(
+            'select ord_id from reshalaa_bot.owner where tel_id = {0}'.format(tel_id))
+        ord_id = await cur.fetchone()
+        await cur.execute(
+            'select m_id from reshalaa_bot.owner where tel_id = {0}'.format(tel_id))
+        m_id = await cur.fetchone()
+        con.close()
+        return ord_id[0], m_id[0]
+
+    @staticmethod
+    async def get_price(ord_id, loop):
+        con, cur = await create_con(loop)
+        await cur.execute(
+            'select customer_pr from reshalaa_bot.db_manager_cust_pri where ord_id = {0}'.format(ord_id))
+        ord_id = await cur.fetchone()
+        con.close()
+        return ord_id[0]
+
+    @staticmethod
+    async def get_pricetwo(ord_id, loop):
+        con, cur = await create_con(loop)
+        await cur.execute(
+            'select customer_pr from reshalaa_bot.db_manager_customer_price where ord_id = {0}'.format(ord_id))
+        ord_id = await cur.fetchone()
+        await cur.execute(
+            'select payment from reshalaa_bot.db_manager_waito where ord_id = {0}'.format(ord_id))
+        payment = await cur.fetchone()
+        con.close()
+        return ord_id[0], payment[0]
+
+    @staticmethod
+    async def update_payment_two(ord_id, pmt, loop):
+        con, cur = await create_con(loop)
+        await cur.execute(
+            'select payment from reshalaa_bot.db_manager_waito where ord_id = {0}'.format(ord_id))
+        payment = await cur.fetchone()
+        dopl = int(payment[0]) + int(pmt)
+        await cur.execute(f'update reshalaa_bot.db_manager_waito set payment = {dopl} where ord_id = {pmt}')
+        await con.commit()
+        con.close()
+        return
+
+    @staticmethod
+    async def insert_pays(ord_id, loop):
+        con, cur = await create_con(loop)
+
+        await cur.execute('insert into reshalaa_bot.db_manager_pays values (%s, %s, %s)',
+                          (ord_id, 0, ''))
         await con.commit()
         con.close()
         return

@@ -5,8 +5,7 @@ import datetime
 
 loop = asyncio.get_event_loop()
 
-
-start_kb = reply_keyboard.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)\
+start_kb = reply_keyboard.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True) \
     .add(reply_keyboard.KeyboardButton('⬇️ Продолжить ⬇️', request_contact=True))
 '''
 loc_kb = reply_keyboard.ReplyKeyboardMarkup(resize_keyboard=True).add(reply_keyboard.KeyboardButton('Отправить текущую локацию 📍', request_location=True))
@@ -16,33 +15,40 @@ loc_menu  = reply_keyboard.ReplyKeyboardMarkup(resize_keyboard=True).add(reply_k
 
 #main_menu_ru = reply_keyboard.ReplyKeyboardMarkup([['🚕 Заказать такси 🚕'], ['📍 Мои локации 📍'], ['💾 История заказов 💾']])'''
 
-main_menu_ru = reply_keyboard.ReplyKeyboardMarkup(resize_keyboard=False).add(reply_keyboard.KeyboardButton('Оформление заказа 📖'))\
-    .add(reply_keyboard.KeyboardButton('Связь с менеджером 📱'))\
-    .add(reply_keyboard.KeyboardButton('Мои заказы 🛒'))\
+main_menu_ru = reply_keyboard.ReplyKeyboardMarkup(resize_keyboard=False).add(
+    reply_keyboard.KeyboardButton('Оформление заказа 📖')) \
+    .add(reply_keyboard.KeyboardButton('Связь с менеджером 📱')) \
+    .add(reply_keyboard.KeyboardButton('Мои заказы 🛒')) \
     .add(reply_keyboard.KeyboardButton('Мои бонусы 💰'))
 
-otmena = reply_keyboard.ReplyKeyboardMarkup(resize_keyboard=True).add(reply_keyboard.KeyboardButton('❌ Отменить оформление заказа ❌'))
+otmena = reply_keyboard.ReplyKeyboardMarkup(resize_keyboard=True).add(
+    reply_keyboard.KeyboardButton('❌ Отменить оформление заказа ❌'))
+
 
 def cont_1():
     k = inline_keyboard.InlineKeyboardMarkup()
     k.add(inline_keyboard.InlineKeyboardButton('Продолжить 🚀', callback_data='cont_1'))
     return k
 
-types = reply_keyboard.ReplyKeyboardMarkup(resize_keyboard=True).add(reply_keyboard.KeyboardButton('Online решение 🚀'))\
-    .add(reply_keyboard.KeyboardButton('Тест дистанционно'))       .add(reply_keyboard.KeyboardButton('ДЗ')) \
-    .add(reply_keyboard.KeyboardButton('Эссе'))    .add(reply_keyboard.KeyboardButton('Реферат')) \
-    .add(reply_keyboard.KeyboardButton('Презентация'))    .add(reply_keyboard.KeyboardButton('Перевод')) \
-    .add(reply_keyboard.KeyboardButton('Лабораторная работа'))    .add(reply_keyboard.KeyboardButton('Расчетная работа (РГР)')) \
-    .add(reply_keyboard.KeyboardButton('Бизнес-план'))    .add(reply_keyboard.KeyboardButton('Курсовая')) \
-    .add(reply_keyboard.KeyboardButton('Дипломная'))    .add(reply_keyboard.KeyboardButton('Магистерская')) \
-    .add(reply_keyboard.KeyboardButton('Отчет по практике'))    .add(reply_keyboard.KeyboardButton('Другое'))\
+
+types = reply_keyboard.ReplyKeyboardMarkup(resize_keyboard=True).add(reply_keyboard.KeyboardButton('Online решение 🚀')) \
+    .add(reply_keyboard.KeyboardButton('Тест дистанционно')).add(reply_keyboard.KeyboardButton('ДЗ')) \
+    .add(reply_keyboard.KeyboardButton('Эссе')).add(reply_keyboard.KeyboardButton('Реферат')) \
+    .add(reply_keyboard.KeyboardButton('Презентация')).add(reply_keyboard.KeyboardButton('Перевод')) \
+    .add(reply_keyboard.KeyboardButton('Лабораторная работа')).add(
+    reply_keyboard.KeyboardButton('Расчетная работа (РГР)')) \
+    .add(reply_keyboard.KeyboardButton('Бизнес-план')).add(reply_keyboard.KeyboardButton('Курсовая')) \
+    .add(reply_keyboard.KeyboardButton('Дипломная')).add(reply_keyboard.KeyboardButton('Магистерская')) \
+    .add(reply_keyboard.KeyboardButton('Отчет по практике')).add(reply_keyboard.KeyboardButton('Другое')) \
     .add(reply_keyboard.KeyboardButton('❌ Отменить оформление заказа ❌'))
 
-
-prof = reply_keyboard.ReplyKeyboardMarkup(resize_keyboard=True).add(reply_keyboard.KeyboardButton('Естественные науки ‍🔬🧬'))\
+prof = reply_keyboard.ReplyKeyboardMarkup(resize_keyboard=True).add(
+    reply_keyboard.KeyboardButton('Естественные науки ‍🔬🧬')) \
     .add(reply_keyboard.KeyboardButton('Технический профиль 🛠💻')) \
-    .add(reply_keyboard.KeyboardButton('Гуманитарные предметы 👩‍🎓'))    .add(reply_keyboard.KeyboardButton('Экономические дисциплины 📊')) \
-    .add(reply_keyboard.KeyboardButton('Право, юриспруденция ⚖️'))    .add(reply_keyboard.KeyboardButton('Языки 🗣'))
+    .add(reply_keyboard.KeyboardButton('Гуманитарные предметы 👩‍🎓')).add(
+    reply_keyboard.KeyboardButton('Экономические дисциплины 📊')) \
+    .add(reply_keyboard.KeyboardButton('Право, юриспруденция ⚖️')).add(reply_keyboard.KeyboardButton('Языки 🗣'))
+
 
 def predm(prof):
     types = []
@@ -52,27 +58,28 @@ def predm(prof):
         types = reply_keyboard.ReplyKeyboardMarkup(resize_keyboard=True).add(
             reply_keyboard.KeyboardButton('Астрономия')) \
             .add(reply_keyboard.KeyboardButton('БЖД')) \
-            .add(reply_keyboard.KeyboardButton('География'))\
+            .add(reply_keyboard.KeyboardButton('География')) \
             .add(reply_keyboard.KeyboardButton('Геология')) \
-            .add(reply_keyboard.KeyboardButton('Химия'))\
-            .add(reply_keyboard.KeyboardButton('Биология'))\
-            .add(reply_keyboard.KeyboardButton('Физика'))\
-            .add(reply_keyboard.KeyboardButton('Экология'))\
-            .add(reply_keyboard.KeyboardButton('Медицина'))\
+            .add(reply_keyboard.KeyboardButton('Химия')) \
+            .add(reply_keyboard.KeyboardButton('Биология')) \
+            .add(reply_keyboard.KeyboardButton('Физика')) \
+            .add(reply_keyboard.KeyboardButton('Экология')) \
+            .add(reply_keyboard.KeyboardButton('Медицина')) \
             .add(reply_keyboard.KeyboardButton('Фармация')) \
-            .add(reply_keyboard.KeyboardButton('Другое'))\
+            .add(reply_keyboard.KeyboardButton('Другое')) \
             .add(reply_keyboard.KeyboardButton('⬅️ Назад'))
 
     elif prof == 'Технический профиль ':
         types = reply_keyboard.ReplyKeyboardMarkup(resize_keyboard=True).add(
             reply_keyboard.KeyboardButton('Математика')) \
             .add(reply_keyboard.KeyboardButton('Высшая математика')) \
-            .add(reply_keyboard.KeyboardButton('Дискретная математика')).add(reply_keyboard.KeyboardButton('Теория вероятности')) \
+            .add(reply_keyboard.KeyboardButton('Дискретная математика')).add(
+            reply_keyboard.KeyboardButton('Теория вероятности')) \
             .add(reply_keyboard.KeyboardButton('Статистика')).add(reply_keyboard.KeyboardButton('Информатика')) \
             .add(reply_keyboard.KeyboardButton('Программирование')).add(reply_keyboard.KeyboardButton('Гидравлика')) \
             .add(reply_keyboard.KeyboardButton('Компьютерная графика')).add(reply_keyboard.KeyboardButton('Черчение')) \
             .add(reply_keyboard.KeyboardButton('Метрология')).add(reply_keyboard.KeyboardButton('Сопромат')) \
-            .add(reply_keyboard.KeyboardButton('Строймех')).add(reply_keyboard.KeyboardButton('Теормех'))\
+            .add(reply_keyboard.KeyboardButton('Строймех')).add(reply_keyboard.KeyboardButton('Теормех')) \
             .add(reply_keyboard.KeyboardButton('Физика')).add(reply_keyboard.KeyboardButton('Электротехника')) \
             .add(reply_keyboard.KeyboardButton('Другое')) \
             .add(reply_keyboard.KeyboardButton('⬅️ Назад'))
@@ -93,7 +100,8 @@ def predm(prof):
             .add(reply_keyboard.KeyboardButton('Маркетинг')).add(reply_keyboard.KeyboardButton('Статистика')) \
             .add(reply_keyboard.KeyboardButton('Макроэкономика')).add(reply_keyboard.KeyboardButton('Микроэкономика')) \
             .add(reply_keyboard.KeyboardButton('Экономика предприятия')).add(reply_keyboard.KeyboardButton('Экономика')) \
-            .add(reply_keyboard.KeyboardButton('Управление эффективностью')).add(reply_keyboard.KeyboardButton('Другое'))\
+            .add(reply_keyboard.KeyboardButton('Управление эффективностью')).add(
+            reply_keyboard.KeyboardButton('Другое')) \
             .add(reply_keyboard.KeyboardButton('⬅️ Назад'))
     elif prof == 'Языки ':
         types = reply_keyboard.ReplyKeyboardMarkup(resize_keyboard=True).add(
@@ -107,13 +115,36 @@ def predm(prof):
     return types
 
 
+pod_pravo = reply_keyboard.ReplyKeyboardMarkup(resize_keyboard=True).add(
+    reply_keyboard.KeyboardButton('Гражданское')) \
+    .add(reply_keyboard.KeyboardButton('Уголовное')) \
+    .add(reply_keyboard.KeyboardButton('Процессуальное')).add(reply_keyboard.KeyboardButton('Административное')) \
+    .add(reply_keyboard.KeyboardButton('Финансовое')) \
+    .add(reply_keyboard.KeyboardButton('⬅️ Назад'))
 
-a = ['Астрономия','БЖД','География','Геология','Химия','Биология','Физика','Экология','Медицина','Фармация', 'Другое', '⬅️ Назад']
-t = ['Математика', 'Высшая математика', 'Дискретная математика', 'Теория вероятности', 'Статистика', 'Информатика', 'Программирование',
+pod_chem = reply_keyboard.ReplyKeyboardMarkup(resize_keyboard=True).add(
+    reply_keyboard.KeyboardButton('Аналитическая')) \
+    .add(reply_keyboard.KeyboardButton('Биохимия')) \
+    .add(reply_keyboard.KeyboardButton('Общая и Неорганическая')).add(reply_keyboard.KeyboardButton('Органическая')) \
+    .add(reply_keyboard.KeyboardButton('Фармацевтическая')) \
+    .add(reply_keyboard.KeyboardButton('Физколлоидная')).add(reply_keyboard.KeyboardButton('Физическая')) \
+    .add(reply_keyboard.KeyboardButton('⬅️ Назад'))
+
+a = ['Астрономия', 'БЖД', 'География', 'Геология', 'Химия', 'Биология', 'Физика', 'Экология', 'Медицина', 'Фармация',
+     'Другое', '⬅️ Назад']
+t = ['Математика', 'Высшая математика', 'Дискретная математика', 'Теория вероятности', 'Статистика', 'Информатика',
+     'Программирование',
      'Гидравлика', 'Метрология', 'Сопромат', 'Строймех', 'Теормех', 'Физика', 'Электротехника', 'Другое', '⬅️ Назад']
-g = ['История', 'Литература', 'Психология', 'Социлогия', 'Философия', 'Логика', 'Реклама', 'Маркетинг', 'Педагогика', 'Языки', 'Другое', '⬅️ Назад']
-e = ['Бух учет', 'Менеджмент', 'Маркетинг', 'Статистика', 'Макроэкономика', 'Микроэкономика', 'Экономика предприятия', 'Экономика', 'Управление эффективностью', 'Другое', '⬅️ Назад']
-l = ['Английский', 'Украинский', 'Русский', 'Испанский', 'Итальянский', 'Китайский', 'Немецкий', 'Французский', 'Другое', '⬅️ Назад']
+g = ['История', 'Литература', 'Психология', 'Социлогия', 'Философия', 'Логика', 'Реклама', 'Маркетинг', 'Педагогика',
+     'Языки', 'Другое', '⬅️ Назад']
+e = ['Бух учет', 'Менеджмент', 'Маркетинг', 'Статистика', 'Макроэкономика', 'Микроэкономика', 'Экономика предприятия',
+     'Экономика', 'Управление эффективностью', 'Другое', '⬅️ Назад']
+l = ['Английский', 'Украинский', 'Русский', 'Испанский', 'Итальянский', 'Китайский', 'Немецкий', 'Французский',
+     'Другое', '⬅️ Назад']
+
+f = ['Гражданское', 'Уголовное', 'процессуальное', 'Административное', 'Финансовое']
+v = ['Аналитическая', 'Биохимия', 'Общая и неорганическая', 'Органическая', 'Фармацевтическая', 'Физколлоидная', 'Физическая']
+
 
 def otr():
     k = inline_keyboard.InlineKeyboardMarkup()
@@ -122,16 +153,17 @@ def otr():
     k.add(inline_keyboard.InlineKeyboardButton('Не принципиально', callback_data='ne_prcpl'))
     return k
 
+
 def ready():
     k = inline_keyboard.InlineKeyboardMarkup()
     k.add(inline_keyboard.InlineKeyboardButton('Готово 👌', callback_data='ready'))
     k.add(inline_keyboard.InlineKeyboardButton('❌ Пропустить отправку файлов ', callback_data='prop'))
     return k
 
-otmena_plus = reply_keyboard.ReplyKeyboardMarkup(resize_keyboard=True).add(reply_keyboard.KeyboardButton('Готово 👌'))\
-                                            .add(reply_keyboard.KeyboardButton('❌ Пропустить отправку файлов'))\
-                                            .add(reply_keyboard.KeyboardButton('❌ Отменить оформление заказа ❌'))
 
+otmena_plus = reply_keyboard.ReplyKeyboardMarkup(resize_keyboard=True).add(reply_keyboard.KeyboardButton('Готово 👌')) \
+    .add(reply_keyboard.KeyboardButton('❌ Пропустить отправку файлов')) \
+    .add(reply_keyboard.KeyboardButton('❌ Отменить оформление заказа ❌'))
 
 
 def get_month():
@@ -151,10 +183,10 @@ def get_month():
 
     return day, monthes.get(str(month)), year, month
 
+
 def datekb():
     inline_kb_full = inline_keyboard.InlineKeyboardMarkup()
     day, month, year, num_month = get_month()
-    print(day, month, year, num_month)
 
     inline_btn_0 = inline_keyboard.InlineKeyboardButton('⬆️', callback_data=f'datev_{day}!{num_month}!{year}')
     inline_btn_1 = inline_keyboard.InlineKeyboardButton('⬆️', callback_data=f'mnthv_{day}!{num_month}!{year}')
@@ -176,8 +208,11 @@ def datekb():
 
     inline_btn_9 = inline_keyboard.InlineKeyboardButton('Подтвердить', callback_data=f'podtv_{day}.{num_month}.{year}')
     inline_kb_full.add(inline_btn_9)
+    inline_btn_10 = inline_keyboard.InlineKeyboardButton('❌ Отменить оформление заказа ❌', callback_data=f'otmena_z')
+    inline_kb_full.add(inline_btn_10)
 
     return inline_kb_full
+
 
 def date_2(day=None, month=None, year=None):
     inline_kb_full = inline_keyboard.InlineKeyboardMarkup()
@@ -192,12 +227,11 @@ def date_2(day=None, month=None, year=None):
     num_month = month
 
     monthes = {'1': 'Январь', '2': 'Февраль', '3': 'Март', '4': 'Апрель', '5': 'Май',
-                   '6': 'Июнь',
-                   '7': 'Июль', '8': 'Август', '9': 'Сентябрь', '10': 'Октябрь', '11': 'Ноябрь',
-                   '12': 'Декабрь'}
+               '6': 'Июнь',
+               '7': 'Июль', '8': 'Август', '9': 'Сентябрь', '10': 'Октябрь', '11': 'Ноябрь',
+               '12': 'Декабрь'}
     month = monthes.get(str(month))
 
-    print('day: ', day, ' month: ', month, ' year: ', year)
 
     if year == None:
         year = datetime.datetime.today().date().year
@@ -223,9 +257,11 @@ def date_2(day=None, month=None, year=None):
 
     inline_btn_9 = inline_keyboard.InlineKeyboardButton('Подтвердить', callback_data=f'podtv_{day}.{num_month}.{year}')
     inline_kb_full.add(inline_btn_9)
-
+    inline_btn_10 = inline_keyboard.InlineKeyboardButton('❌ Отменить оформление заказа ❌', callback_data=f'otmena_z')
+    inline_kb_full.add(inline_btn_10)
 
     return inline_kb_full
+
 
 def timekb(tel_id, num):
     time = UsersDbManager.get_time_t(tel_id)
@@ -263,17 +299,17 @@ def timekb(tel_id, num):
     inline_btn_6 = inline_keyboard.InlineKeyboardButton('➖ 1 час', callback_data=f'hourm_{hour}!{minutes}')
     inline_btn_7 = inline_keyboard.InlineKeyboardButton('➖ 15 минут', callback_data=f'minum_{hour}!{minutes}')
 
-
     inline_kb_full.row(inline_btn_6, inline_btn_7)
 
     inline_btn_9 = inline_keyboard.InlineKeyboardButton('Подтвердить', callback_data=f'podtv{num}_{hour}:{minutes}')
     inline_kb_full.add(inline_btn_9)
+    inline_btn_10 = inline_keyboard.InlineKeyboardButton('❌ Отменить оформление заказа ❌', callback_data=f'otmena_z')
+    inline_kb_full.add(inline_btn_10)
 
     return inline_kb_full
 
-def timekb_2(hour=None, minutes= None, num=None, tel_id=None):
 
-    print('numt2:', num)
+def timekb_2(hour=None, minutes=None, num=None, tel_id=None):
 
     inline_kb_full = inline_keyboard.InlineKeyboardMarkup()
 
@@ -291,13 +327,15 @@ def timekb_2(hour=None, minutes= None, num=None, tel_id=None):
     inline_btn_6 = inline_keyboard.InlineKeyboardButton('➖ 1 час', callback_data=f'hourm_{hour}!{minutes}')
     inline_btn_7 = inline_keyboard.InlineKeyboardButton('➖ 15 минут', callback_data=f'minum_{hour}!{minutes}')
 
-
     inline_kb_full.row(inline_btn_6, inline_btn_7)
 
     inline_btn_9 = inline_keyboard.InlineKeyboardButton('Подтвердить', callback_data=f'podtv{num}_{hour}:{minutes}')
     inline_kb_full.add(inline_btn_9)
+    inline_btn_10 = inline_keyboard.InlineKeyboardButton('❌ Отменить оформление заказа ❌', callback_data=f'otmena_z')
+    inline_kb_full.add(inline_btn_10)
 
     return inline_kb_full
+
 
 '''def ontimekb(num):
 
@@ -354,20 +392,24 @@ def ontimekb_2(hour=None, minutes= None):
 
     return inline_kb_full'''
 
+
 def dogov():
     k = inline_keyboard.InlineKeyboardMarkup()
     k.add(inline_keyboard.InlineKeyboardButton('Договорная', callback_data='dogov'))
     return k
+
 
 def got():
     k = inline_keyboard.InlineKeyboardMarkup()
     k.add(inline_keyboard.InlineKeyboardButton('Готово 🙌', callback_data='got'))
     return k
 
+
 def manager():
     k = inline_keyboard.InlineKeyboardMarkup()
     k.add(inline_keyboard.InlineKeyboardButton('Связь с менеджером 📱', callback_data='manager'))
     return k
+
 
 def get_sv():
     k = inline_keyboard.InlineKeyboardMarkup()
@@ -375,20 +417,26 @@ def get_sv():
     k.add(inline_keyboard.InlineKeyboardButton('Позвонить 📱️', callback_data='call_man'))
     return k
 
+
 def online_kb():
     k = inline_keyboard.InlineKeyboardMarkup()
     k.add(inline_keyboard.InlineKeyboardButton('Подключить автора в чат', callback_data='get_author'))
     k.add(inline_keyboard.InlineKeyboardButton('Онлайн работы не будет ❌', callback_data='no_online'))
     return k
 
-otm_manager = reply_keyboard.ReplyKeyboardMarkup(resize_keyboard=True).add(reply_keyboard.KeyboardButton('❌ Отменить связь с менеджером❌'))
 
-author_otm = reply_keyboard.ReplyKeyboardMarkup(resize_keyboard=True).add(reply_keyboard.KeyboardButton('Онлайн работа закончена  ❌'))
+otm_manager = reply_keyboard.ReplyKeyboardMarkup(resize_keyboard=True).add(
+    reply_keyboard.KeyboardButton('❌ Отменить связь с менеджером❌'))
+
+author_otm = reply_keyboard.ReplyKeyboardMarkup(resize_keyboard=True).add(
+    reply_keyboard.KeyboardButton('Онлайн работа закончена  ❌'))
+
 
 def send_man():
     k = inline_keyboard.InlineKeyboardMarkup()
     k.add(inline_keyboard.InlineKeyboardButton('Написать ⌨️', callback_data='send_manager'))
     return k
+
 
 async def orders_keyboard(ord_id):
     inline_kb_full = inline_keyboard.InlineKeyboardMarkup()
@@ -399,11 +447,13 @@ async def orders_keyboard(ord_id):
     prices = await UsersDbManager.get_order_author_pre(ord_id, loop)
     for price in prices:
         username = await UsersDbManager.get_username_a(price[1], loop)
-        inline_btn_0 = inline_keyboard.InlineKeyboardButton(f'@{username} - {price[2]}', callback_data=f'author_{price[1]}')
+        inline_btn_0 = inline_keyboard.InlineKeyboardButton(f'@{username} - {price[2]}',
+                                                            callback_data=f'author_{price[1]}')
         inline_btn_1 = inline_keyboard.InlineKeyboardButton(f'@{username}', callback_data=f'')
         inline_kb_full.row(inline_btn_0, inline_btn_1)
 
     return inline_kb_full
+
 
 def pay_or_not(ord_id):
     k = inline_keyboard.InlineKeyboardMarkup()
@@ -411,26 +461,33 @@ def pay_or_not(ord_id):
     k.add(inline_keyboard.InlineKeyboardButton('❌ Отменить заказ ❌', callback_data=f'otmena_{ord_id}'))
     return k
 
+
 def pay(ord_id):
     k = inline_keyboard.InlineKeyboardMarkup()
     k.add(inline_keyboard.InlineKeyboardButton('💰Оплатить 💰', callback_data=f'pay_{ord_id}'))
     return k
 
+
 def fifty_or_all(ord_id):
     k = inline_keyboard.InlineKeyboardMarkup()
     k.add(inline_keyboard.InlineKeyboardButton('Оплатил 50%', callback_data=f'fifty_{ord_id}'))
     k.add(inline_keyboard.InlineKeyboardButton('Оплатил 100%', callback_data=f'all_{ord_id}'))
+    k.add(inline_keyboard.InlineKeyboardButton('Не хватает', callback_data=f'more_{ord_id}'))
     return k
+
 
 def all(ord_id):
     k = inline_keyboard.InlineKeyboardMarkup()
     k.add(inline_keyboard.InlineKeyboardButton('100%', callback_data=f'oke_{ord_id}'))
+    k.add(inline_keyboard.InlineKeyboardButton('Не хватает', callback_data=f'moretwo_{ord_id}'))
     return k
+
 
 def otm_otz():
     k = inline_keyboard.InlineKeyboardMarkup()
     k.add(inline_keyboard.InlineKeyboardButton('❌ Отменить оценку заказа ❌', callback_data=f'otm_otz'))
     return k
+
 
 def otz(ord_id):
     k = inline_keyboard.InlineKeyboardMarkup()
@@ -442,7 +499,9 @@ def otz(ord_id):
     k.row(one, two, three, four, five)
     return k
 
+
 ok = reply_keyboard.ReplyKeyboardMarkup(resize_keyboard=True).add(reply_keyboard.KeyboardButton('Готово'))
+
 
 def why_otm(ord_id):
     k = inline_keyboard.InlineKeyboardMarkup()
@@ -451,4 +510,31 @@ def why_otm(ord_id):
     k.add(inline_keyboard.InlineKeyboardButton('Заказал у других людей', callback_data=f'other_{ord_id}'))
     k.add(inline_keyboard.InlineKeyboardButton('Другое', callback_data=f'another_{ord_id}'))
 
+    return k
+
+
+def author_red():
+    k = inline_keyboard.InlineKeyboardMarkup()
+    k.add(inline_keyboard.InlineKeyboardButton('Номер карты', callback_data=f'num_c'))
+    k.add(inline_keyboard.InlineKeyboardButton('Профиль', callback_data=f'prof_r'))
+    k.add(inline_keyboard.InlineKeyboardButton('Предмет', callback_data=f'predm_r'))
+    return k
+
+
+def confirm_author(tel_id):
+    k = inline_keyboard.InlineKeyboardMarkup()
+    k.add(inline_keyboard.InlineKeyboardButton('Дать доступ', callback_data=f'confa_{tel_id}'))
+    k.add(inline_keyboard.InlineKeyboardButton('Отказать', callback_data=f'otka_{tel_id}'))
+    return k
+
+
+def otm_my_orders(ord_id):
+    k = inline_keyboard.InlineKeyboardMarkup()
+    k.add(inline_keyboard.InlineKeyboardButton('❌ Отменить заказ ❌', callback_data=f'otmmyord_{ord_id}'))
+    return k
+
+
+def otm_2(ord_id):
+    k = inline_keyboard.InlineKeyboardMarkup()
+    k.add(inline_keyboard.InlineKeyboardButton('❌ Отменить заказ ❌', callback_data=f'otmena_{ord_id}'))
     return k

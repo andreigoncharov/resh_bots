@@ -1,75 +1,49 @@
-'''import datetime
+'''
+from pymysql import connect
 
-day = datetime.datetime.today().date().day
-x = datetime.datetime.now().month
-month = x.strftime("%B")
-year = datetime.datetime.today().date().year
-
-monthes = {'January': 'Январь', 'February': 'Февраль', 'March': 'Март', 'April': 'Апрель', 'May': 'Май', 'June': 'Июнь',
-           'July': 'Июль', 'August': 'Август', 'September': 'Сентябрь', 'October': 'Октябрь', 'November': 'Ноябрь', 'December':'Декабрь'}
-
-month = monthes.get(month)
+from config import *
 
 
-print(day)
-print(month)
-print(year)'''
-from datetime import datetime, timedelta
-
-'''import re
-def detect_numbers(text):
-    phone_regex = re.compile(r"(\+380)?\s*?(\d{3})\s*?(\d{3})\s*?(\d{3})")
-    groups = phone_regex.findall(text)
-    for g in groups:
-        print("".join(g))
-
-#detect_numbers("so I need to match +0991302490, +12673042397")
-a=''
-try:
-    a = re.search("(?P<url>t.me?/[^\s]+)", 'andrew').group("url")
-except:
-    print(len(a))'''
-
-'''date = '24.12.2020'
-dot = date.find('.')
-if date[int(dot)+1] == '1':
-    date = date
-else:
-    p = date[:-6]
-    print(p)
-    date_2 = '0' + date[dot+1:]
-    print(date_2)
-    date = p + date_2
-    print(date)
-print(date)
-import string
-
-tab = str.maketrans(string.punctuation, ' ' * len(string.punctuation))
-
-text = ',Предмет,Предмет,Предмет,Предмет'
-
-res = text.translate(tab).split()
-
-print(res)'''
+def create_sync_con():
+    con = connect(host=DB_HOST, user=DB_USER, db=DB_NAME,
+                  password=DB_PASSWORD)
+    cur = con.cursor()
+    return con, cur
 
 
-def bubble_sort(nums):
-    # Устанавливаем swapped в True, чтобы цикл запустился хотя бы один раз
-    swapped = True
-    while swapped:
-        swapped = False
-        for i in range(len(nums) - 1):
-            if nums[i] > nums[i + 1]:
-                # Меняем элементы
-                nums[i], nums[i + 1] = nums[i + 1], nums[i]
-                # Устанавливаем swapped в True для следующей итерации
-                swapped = True
-        print(nums)
+def otm_order(ord_id):
+    con, cur = create_sync_con()
 
-# Проверяем, что оно работает
-#random_list_of_nums = [2,8,9,4,1]
-#bubble_sort(random_list_of_nums)
-#print(random_list_of_nums)
+    all = []
 
-curr_time = datetime.now() - datetime.timedelta(minutes=10)
-print(curr_time)
+    cur.execute('select * from reshalaa_bot.db_manager_order where ord_id = {0}'.format(ord_id))
+    context =  cur.fetchall()
+    all.append(context)
+
+    cur.execute('select * from reshalaa_bot.db_manager_priceo where ord_id = {0}'.format(ord_id))
+    context =  cur.fetchall()
+    all.append(context)
+
+    cur.execute('select * from reshalaa_bot.db_manager_activeo where ord_id = {0}'.format(ord_id))
+    context = cur.fetchall()
+    all.append(context)
+
+    cur.execute('select * from reshalaa_bot.db_manager_waito where ord_id = {0}'.format(ord_id))
+    context = cur.fetchall()
+    all.append(context)
+
+    con.close()
+
+    ret_all = []
+
+    for el in all:
+        if len(el) is not 0:
+            ret_all.append(el[0])
+
+    return ret_all
+
+
+o = otm_order(61)
+'''
+a = '_2'
+print(a[1:])

@@ -1,18 +1,17 @@
 import asyncio
-from aiogram import Bot, Dispatcher, executor, types
-from aiogram.utils.text_decorations import markdown_decoration
+import datetime
+import re
+
+import aiogram.types as tp
+import requests
+from aiogram import Bot, Dispatcher, executor
+
+import ConfirmationOfOrders_bot
+import author_bot
+import author_markup as mk2
 import markup as mk
 from config import TOKEN
 from db_manager import UsersDbManager
-import aiogram.types as tp
-from aiogram.types import labeled_price, ChatActions
-import requests
-import datetime
-from io import BytesIO
-import re
-import author_markup as mk2
-import author_bot
-import ConfirmationOfOrders_bot
 
 bot = Bot(TOKEN)
 dp = Dispatcher(bot)
@@ -59,9 +58,9 @@ async def wait_name(message):
     tel_id = message.chat.id
     await UsersDbManager.update_vuz(tel_id, str(message.text), loop)
 
-    text = 'Вы успешно прошли регистрацию! 🎉\n' \
-           'Для оформления заказа 📖  или связи с менеджером 🙋 воспользуйтесь главным меню внизу 👇'
-    await bot.send_message(tel_id, text=text, reply_markup=mk.main_menu_ru, disable_notification=True)
+    text = '<b>Вы прошли регистрацию!</b>\n' \
+           'Для оформления заказа  или связи с менеджером  воспользуйтесь главным меню внизу ⤵️'
+    await bot.send_message(tel_id, text=text, reply_markup=mk.main_menu_ru, disable_notification=True, parse_mode='html')
     await UsersDbManager.update_context(tel_id, '', loop)
 
 
@@ -266,16 +265,15 @@ async def loc_m(message):
 async def loc_m(message):
     tel_id = message.chat.id
     await UsersDbManager.update_prof(tel_id, message.text[:-1], loop)
-    await UsersDbManager.update_predm(tel_id, message.text[:-1], loop)
-    text = '<b>Прикрепите необходимые документы или фото</b> 📎\nПо окончанию нажмите Готово 👌'
-    await bot.delete_message(tel_id, message.message_id)
-    await bot.send_message(tel_id, text=text, reply_markup=mk.otmena_plus, disable_notification=True, parse_mode='html')
-    if str(await UsersDbManager.get_type(tel_id, loop)) == 'Online решение':
-        text = '<i>Пришлите пример работы или подобные задания, которые вы выполняли.</i>'
-        await bot.send_message(tel_id, text=text, disable_notification=True, parse_mode='html')
-    await UsersDbManager.update_oforml(tel_id, 'Электронный вид', loop)
-    await UsersDbManager.update_context(tel_id, 'wait_files', loop)
+    text = f'Выберете подкатегорию 👌'
+    await bot.send_message(tel_id, text=text, reply_markup=mk.pod_pravo, disable_notification=True)
 
+@dp.message_handler(lambda message: message.text == 'Химия')
+async def loc_m(message):
+    tel_id = message.chat.id
+    #await UsersDbManager.update_prof(tel_id, message.text[:-1], loop)
+    text = f'Выберете подкатегорию 👌'
+    await bot.send_message(tel_id, text=text, reply_markup=mk.pod_pravo, disable_notification=True)
 
 @dp.message_handler(lambda message: message.text in mk.a)
 async def loc_m(message):
@@ -346,6 +344,31 @@ async def loc_m(message):
     await UsersDbManager.update_oforml(tel_id, 'Электронный вид', loop)
     await UsersDbManager.update_context(tel_id, 'wait_files', loop)
 
+@dp.message_handler(lambda message: message.text in mk.f)
+async def loc_m(message):
+    tel_id = message.chat.id
+    await UsersDbManager.update_predm(tel_id, message.text, loop)
+    text = '<b>Прикрепите необходимые документы или фото</b> 📎\nПо окончанию нажмите Готово 👌'
+    await bot.delete_message(tel_id, message.message_id)
+    await bot.send_message(tel_id, text=text, reply_markup=mk.otmena_plus, disable_notification=True, parse_mode='html')
+    if str(await UsersDbManager.get_type(tel_id, loop)) == 'Online решение':
+        text = '<i>Пришлите пример работы или подобные задания, которые вы выполняли.</i>'
+        await bot.send_message(tel_id, text=text, disable_notification=True, parse_mode='html')
+    await UsersDbManager.update_oforml(tel_id, 'Электронный вид', loop)
+    await UsersDbManager.update_context(tel_id, 'wait_files', loop)
+
+@dp.message_handler(lambda message: message.text in mk.v)
+async def loc_m(message):
+    tel_id = message.chat.id
+    await UsersDbManager.update_predm(tel_id, message.text, loop)
+    text = '<b>Прикрепите необходимые документы или фото</b> 📎\nПо окончанию нажмите Готово 👌'
+    await bot.delete_message(tel_id, message.message_id)
+    await bot.send_message(tel_id, text=text, reply_markup=mk.otmena_plus, disable_notification=True, parse_mode='html')
+    if str(await UsersDbManager.get_type(tel_id, loop)) == 'Online решение':
+        text = '<i>Пришлите пример работы или подобные задания, которые вы выполняли.</i>'
+        await bot.send_message(tel_id, text=text, disable_notification=True, parse_mode='html')
+    await UsersDbManager.update_oforml(tel_id, 'Электронный вид', loop)
+    await UsersDbManager.update_context(tel_id, 'wait_files', loop)
 
 '''
 text = '<b>Прикрепите необходимые документы или фото</b> 📎\nПо окончанию нажмите Готово 👌'
@@ -378,7 +401,7 @@ async def sss1(message):
         await UsersDbManager.insert_ph_img_1(ord_id, pht, 'photto', loop)
 
         link = f'https://api.telegram.org/file/bot{TOKEN}/{file_info.file_path}'
-        await UsersDbManager.update_links(ord_id, link, loop)
+        await UsersDbManager.update_links(ord_id, link, tel_id, loop)
 
     elif context == 'online_work':
         ord_id = await UsersDbManager.get_ord_auth_2(tel_id, loop)
@@ -424,7 +447,7 @@ async def sss1(message):
 
         link = f'https://api.telegram.org/file/bot{TOKEN}/{file_info.file_path}'
 
-        await UsersDbManager.update_links(ord_id, link, loop)
+        await UsersDbManager.update_links(ord_id, link, tel_id, loop)
 
 
     elif context == 'online_work':
@@ -440,6 +463,8 @@ async def sss1(message):
 @dp.message_handler(lambda message: message.text == 'Готово 👌')
 async def loc_m(message):
     tel_id = message.chat.id
+    await bot.send_message(tel_id, text='.', reply_markup=mk.otmena, disable_notification=True, parse_mode='html')
+    await bot.delete_message(tel_id, message.message_id+1)
     text = '<b>Укажите дату сдачи работы</b> 📆'
     await bot.send_message(tel_id, text=text, reply_markup=mk.datekb(), disable_notification=True, parse_mode='html')
 
@@ -447,6 +472,8 @@ async def loc_m(message):
 @dp.message_handler(lambda message: message.text == '❌ Пропустить отправку файлов')
 async def loc_m(message):
     tel_id = message.chat.id
+    await bot.send_message(tel_id, text='.', reply_markup=mk.otmena, disable_notification=True, parse_mode='html')
+    await bot.delete_message(tel_id, message.message_id + 1)
     text = '<b>Укажите дату сдачи работы</b> 📆'
     await bot.send_message(tel_id, text=text, reply_markup=mk.datekb(), disable_notification=True, parse_mode='html')
 
@@ -459,6 +486,13 @@ async def loc_m(message):
     await UsersDbManager.update_context(tel_id, '', loop)
     await UsersDbManager.delete_all(tel_id, loop)
 
+@dp.callback_query_handler(lambda c: c.data.startswith('otmena_z'))
+async def loc_m(c):
+    tel_id = c.message.chat.id
+    text = 'Меню'
+    await bot.send_message(tel_id, text=text, reply_markup=mk.main_menu_ru, disable_notification=True)
+    await UsersDbManager.update_context(tel_id, '', loop)
+    await UsersDbManager.delete_all(tel_id, loop)
 
 monthes = {'1': '31', '2': '28', '3': '31', '4': '30', '5': '31',
            '6': '30',
@@ -522,7 +556,6 @@ async def process_call(c):
         month = str(c.data[9])
 
     year = str(c.data[-4:])
-    print('day: ', day, ' month: ', int(month) + 1, ' year: ', year)
 
     await bot.edit_message_reply_markup(tel_id, c.message.message_id,
                                         reply_markup=mk.date_2(day=str(int(day)), month=str(int(month) + 1),
@@ -575,7 +608,6 @@ async def process_call(c):
     year = str(c.data[-4:])
 
     m = monthes.get(month)
-    print(month)
     if int(day) == 1:
         if month == '1':
             month = '12'
@@ -700,9 +732,7 @@ async def process_call(c):
     else:
         s = False
     time = UsersDbManager.get_time(tel_id)
-    print('htime:', time)
     if time is None:
-        print(None)
         await bot.edit_message_reply_markup(tel_id, c.message.message_id,
                                             reply_markup=mk.timekb_2(hour=str(hour), minutes=str(minutes), num=2,
                                                                      tel_id=tel_id))
@@ -861,7 +891,6 @@ async def process_call(c):
 async def process_call(c):
     tel_id = c.message.chat.id
     date = str(c.data[6:])
-    print('podtv_2')
     await UsersDbManager.update_time(tel_id, date, loop)
     s = str(await UsersDbManager.get_type(tel_id, loop))
     if s == 'Online решение' or s == 'Тест дистанционно':
@@ -906,10 +935,9 @@ async def wait_name(message):
                            call.data.startswith('ruk'))
 async def count_yes(call):
     tel_id = call.message.chat.id
-    text = '<b>Пришлите цену за задание</b> 💸'
-    text_2 = '<i>Если не можете оценить заказ нажмите ↓</i>'
-    await bot.send_message(tel_id, text=text, reply_markup=mk.otmena, disable_notification=True, parse_mode='html')
-    await bot.send_message(tel_id, text=text_2, reply_markup=mk.dogov(), disable_notification=True, parse_mode='html')
+    text = '<b>Пришлите цену за задание</b> 💸\n' \
+           '<i>Если не можете оценить нажмите ↓</i>'
+    await bot.send_message(tel_id, text=text, reply_markup=mk.dogov(), disable_notification=True, parse_mode='html')
     await UsersDbManager.update_oforml(tel_id, 'От руки', loop)
     await UsersDbManager.update_context(tel_id, 'wait_price', loop)
 
@@ -919,10 +947,9 @@ async def count_yes(call):
 async def count_yes(call):
     tel_id = call.message.chat.id
     await UsersDbManager.update_oforml(tel_id, 'Электронный вид', loop)
-    text = '<b>Пришлите цену за задание</b> 💸'
-    text_2 = '<i>Если не можете оценить заказ нажмите ↓</i>'
-    await bot.send_message(tel_id, text=text, reply_markup=mk.otmena, disable_notification=True, parse_mode='html')
-    await bot.send_message(tel_id, text=text_2, reply_markup=mk.dogov(), disable_notification=True, parse_mode='html')
+    text = '<b>Пришлите цену за задание</b> 💸\n' \
+           '<i>Если не можете оценить нажмите ↓</i>'
+    await bot.send_message(tel_id, text=text, reply_markup=mk.dogov(), disable_notification=True, parse_mode='html')
     await UsersDbManager.update_context(tel_id, 'wait_price', loop)
 
 
@@ -931,10 +958,9 @@ async def count_yes(call):
 async def count_yes(call):
     tel_id = call.message.chat.id
     await UsersDbManager.update_oforml(tel_id, 'Не принципиально', loop)
-    text = '<b>Пришлите цену за задание</b> 💸'
-    text_2 = '<i>Если не можете оценить заказ нажмите ↓</i>'
-    await bot.send_message(tel_id, text=text, reply_markup=mk.otmena, disable_notification=True, parse_mode='html')
-    await bot.send_message(tel_id, text=text_2, reply_markup=mk.dogov(), disable_notification=True, parse_mode='html')
+    text = '<b>Пришлите цену за задание</b> 💸\n' \
+           '<i>Если не можете оценить нажмите ↓</i>'
+    await bot.send_message(tel_id, text=text, reply_markup=mk.dogov(), disable_notification=True, parse_mode='html')
     await UsersDbManager.update_context(tel_id, 'wait_price', loop)
 
 
@@ -1030,8 +1056,9 @@ async def process_call(c):
 
             text = '<b>Постараемся как можно быстрее оценить ваш заказ</b> 🚀\n' \
                    '<i>Оцениваем в течении 2 часов. Вы оплачиваете предоплату и только после этого мы приступаем к работе.</i>\n' \
-                   '<b>Есть вопросы или Вы хотите изменить заказ?</b> Отпишите менеджеру ⬇️'
-            await bot.send_message(tel_id, text=text, reply_markup=mk.manager(), disable_notification=True,
+                   '<b>Есть вопросы или Вы хотите изменить заказ?</b> Отпишите менеджеру ⬇\n' \
+                   '@reshalaa_help️'
+            await bot.send_message(tel_id, text=text, disable_notification=True,
                                    parse_mode='html')
     await UsersDbManager.update_context(tel_id, '', loop)
     await author_bot.send_new_order(order_info[0])
@@ -1084,7 +1111,7 @@ async def loc_m(message):
                f'Оформление: {order_info[6]}\n' \
                f'Комментарий: {order_info[5]}' \
                f'\n\nПрикрипленные файлы: '
-        await bot.send_message(tel_id, text=text, reply_markup=mk.main_menu_ru, disable_notification=True,
+        await bot.send_message(tel_id, text=text, reply_markup=mk.otm_my_orders(order_info[0]), disable_notification=True,
                                parse_mode='html')
         await send_files(tel_id, order_info[0])
 
@@ -1092,8 +1119,10 @@ async def loc_m(message):
 @dp.message_handler(lambda message: message.text == 'Связь с менеджером 📱')
 async def loc_m(message):
     tel_id = message.chat.id
-    text = 'Выберите способ связи с менеджером ⬇️'
-    await bot.send_message(tel_id, text=text, reply_markup=mk.get_sv(), disable_notification=True)
+    text = '<b>Выберите способ связи с менеджером</b> ⬇️\n' \
+           '⌨️ @Reshalaa_help\n' \
+           '📱 +380634690637'
+    await bot.send_message(tel_id, text=text, disable_notification=True, parse_mode='html')
 
 
 @dp.callback_query_handler(lambda c: c.data.startswith('manager'))
@@ -1190,10 +1219,12 @@ async def process_call(c):
     await UsersDbManager.add_num(tel_id, ord_id, loop)
 
     text = '<b>Оплатить можно:</b>\n' \
-           '✔️ <b>Приватбанк</b> (Огинская Анна)\n' \
+           '✔️ Монобанк (Огинская Анна)\n' \
+           '4441 1144 4252 7659' \
+           '✔️ Приватбанк\n' \
            '4149 6293 1543 9281\n\n' \
            'После оплаты отправьте скрин с оплатой заказа'
-    await bot.send_message(tel_id, text=text, reply_markup=mk.manager(), parse_mode='html', disable_notification=True)
+    await bot.send_message(tel_id, text=text, parse_mode='html', disable_notification=True)
     await UsersDbManager.update_context(tel_id, 'wait_photo_opl', loop)
 
 @dp.callback_query_handler(lambda c: c.data.startswith('payb_'))
@@ -1206,10 +1237,12 @@ async def process_call(c):
              f'Вам необходимо заплатить <i>{cost}</i> грн.'
 
     text = '<b>Оплатить можно:</b>\n' \
-           '✔️ <b>Приватбанк</b> (Огинская Анна)\n' \
+           '✔️ Монобанк (Огинская Анна)\n' \
+           '4441 1144 4252 7659' \
+           '✔️ Приватбанк\n' \
            '4149 6293 1543 9281\n\n' \
            'После оплаты отправьте скрин с оплатой заказа'
-    await bot.send_message(tel_id, text=text, reply_markup=mk.manager(), parse_mode='html', disable_notification=True)
+    await bot.send_message(tel_id, text=text, parse_mode='html', disable_notification=True)
     await UsersDbManager.update_context(tel_id, 'wait_photo_opl', loop)
 
 
@@ -1220,10 +1253,12 @@ async def process_call(c):
     await UsersDbManager.add_num(tel_id, ord_id, loop)
 
     text = '<b>Оплатить можно:</b>\n' \
-           '✔️ <b>Приватбанк</b> (Огинская Анна)\n' \
+           '✔️ Монобанк (Огинская Анна)\n' \
+           '4441 1144 4252 7659' \
+           '✔️ Приватбанк\n' \
            '4149 6293 1543 9281\n\n' \
            'После оплаты отправьте скрин с оплатой заказа'
-    await bot.send_message(tel_id, text=text, reply_markup=mk.manager(), parse_mode='html', disable_notification=True)
+    await bot.send_message(tel_id, text=text, parse_mode='html', disable_notification=True)
     await UsersDbManager.update_context(tel_id, 'wait_photo_opltwo', loop)
 
 
@@ -1244,8 +1279,6 @@ async def confirm_fifty(tel_id, ord_id, money):
 async def confirm_fifty_2(tel_id, ord_id, money):
     order_info = await UsersDbManager.get_wait_order(ord_id, loop)
     ord_id = ord_id[1:]
-    print(ord_id)
-    print(order_info)
     text = f'<b>Мы получили оплату в размере</b> 💵 <b>{money} грн</b> 💵 \n\n' \
            f'<b>по заказу №{ord_id}</b> 🚀\n' \
            f'<b>Тип работы: </b>{order_info[2]}\n' \
@@ -1288,6 +1321,14 @@ async def confirm_all(tel_id, ord_id, money):
     text_2 = f'<b>Специалист приступил к выполнению заказа №{ord_id}</b>🚀'
     await bot.send_message(tel_id, text=text_2, parse_mode='html')
 
+async def confirm_np_dopl(tel_id, ord_id, money):
+    order_info = await UsersDbManager.get_priceo_order(ord_id, loop)
+    text = f'<b>Мы получили оплату в размере</b> 💵 <b>{money} грн</b> 💵 \n\n' \
+           f'<b>по заказу №{ord_id}</b> 🚀\n' \
+           f'<b>Тип работы: </b>{order_info[2]}\n' \
+           f'<b>Предмет:</b> {order_info[4]}\n' \
+           f'💵 <b>Для получения готового задания вам необходимо доплатить еще <i>{money}</i> грн</b> 💵'
+    await bot.send_message(tel_id, text=text, reply_markup=mk.pay(ord_id[1:]), parse_mode='html')
 
 async def dopl_yes(tel_id, ord_id, money):
     order_info = await UsersDbManager.get_wait_order(ord_id, loop)
@@ -1457,6 +1498,14 @@ async def loc_m(message):
     text = f'На ваше счету <i>{bonuses}</i> гривен.\n\n' \
            f'Вы можете использовать их при оплате заказа!'
     await bot.send_message(tel_id, text=text, disable_notification=True, parse_mode='html')
+
+@dp.callback_query_handler(lambda c: c.data.startswith('otmmyord_'))
+async def process_call(c):
+    tel_id = c.message.chat.id
+    ord_id = c.data[8:]
+    await UsersDbManager.otm_order(ord_id, loop)
+    text = '<b>Укажите, пожалуйста, причину</b>'
+    await bot.send_message(tel_id, text=text, reply_markup=mk.why_otm(ord_id), parse_mode='html')
 
 if __name__ == '__main__':
     executor.start_polling(dp, skip_updates=True)

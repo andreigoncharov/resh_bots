@@ -11,20 +11,23 @@ main_menu = reply_keyboard.ReplyKeyboardMarkup(resize_keyboard=False) \
     .add(reply_keyboard.KeyboardButton('Мои заказы 🙏')) \
     .add(reply_keyboard.KeyboardButton('Связь с менеджером 📱')) \
     .add(reply_keyboard.KeyboardButton('Редактировать профиль 🙌')) \
-    .add(reply_keyboard.KeyboardButton('Мои средства 💸'))
+    .add(reply_keyboard.KeyboardButton('Мои средства 💸')) \
+    .add(reply_keyboard.KeyboardButton('Мой рейтинг 📊'))
 
 main_menu_1 = reply_keyboard.ReplyKeyboardMarkup(resize_keyboard=False) \
     .add(reply_keyboard.KeyboardButton('Свободные заказы 📝')) \
     .add(reply_keyboard.KeyboardButton('Мои заказы 🙏')) \
     .add(reply_keyboard.KeyboardButton('Связь с менеджером 📱')) \
-    .add(reply_keyboard.KeyboardButton('Редактировать профиль 🙌'))
+    .add(reply_keyboard.KeyboardButton('Редактировать профиль 🙌')) \
+    .add(reply_keyboard.KeyboardButton('Мои средства 💸')) \
+    .add(reply_keyboard.KeyboardButton('Мой рейтинг 📊'))
 
 main_menu_2 = reply_keyboard.ReplyKeyboardMarkup(resize_keyboard=False) \
     .add(reply_keyboard.KeyboardButton('Свободные заказы 📝')) \
     .add(reply_keyboard.KeyboardButton('Мои заказы 🙏')) \
     .add(reply_keyboard.KeyboardButton('Связь с менеджером 📱'))
 
-otm_otz = reply_keyboard.ReplyKeyboardMarkup(resize_keyboard=False) \
+otm_otz = reply_keyboard.ReplyKeyboardMarkup(resize_keyboard=True) \
     .add(reply_keyboard.KeyboardButton('❌ Отменить оценку ❌'))
 
 no_com = reply_keyboard.ReplyKeyboardMarkup(resize_keyboard=False) \

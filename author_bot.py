@@ -49,8 +49,7 @@ async def get_contact(message):
 async def wait_name(message):
     tel_id = message.chat.id
 
-    text = 'Напечатайте название Вашего университета‍🎓\n\n' \
-           '<i>Это конфиденциальная информация, благодаря этому понимаем требования к работам.</i>'
+    text = 'Напечатайте название Вашего университета‍🎓'
     await bot.send_message(tel_id, text=text, disable_notification=True, parse_mode='html')
     await UsersDbManager.update_context_a(tel_id, 'wait_name_vuz_a', loop)
 
@@ -185,100 +184,186 @@ async def wait_name(message):
 @dp.message_handler(lambda message: message.text == 'Естественные науки ‍🔬🧬')
 async def loc_m(message):
     tel_id = message.chat.id
-    await UsersDbManager.update_prof_a(tel_id, message.text[:-2], loop)
-    text = f'<b>Выберете предмет</b> 👌'
-    await bot.send_message(tel_id, text=text, reply_markup=mk1.predm(message.text[:-3]), disable_notification=True,
-                           parse_mode='html')
+    context = await UsersDbManager.get_context_a(tel_id, loop)
+    if context == 'wait_prof':
+        await bot.send_message(tel_id, text='Профиль добавлен!', reply_markup=mk.main_menu)
+        await UsersDbManager.update_prof_a(tel_id, message.text[:-2], loop)
+        await UsersDbManager.update_context_a(tel_id, '', loop)
+    elif context == 'wait_new_prof':
+        text = f'<b>Выберете предмет</b> 👌'
+        await bot.send_message(tel_id, text=text, reply_markup=mk1.predm(message.text[:-2]), disable_notification=True,
+                               parse_mode='html')
+    else:
+        await UsersDbManager.update_prof_a(tel_id, message.text[:-2], loop)
+        text = f'<b>Выберете предмет</b> 👌'
+        await bot.send_message(tel_id, text=text, reply_markup=mk1.predm(message.text[:-3]), disable_notification=True,
+                               parse_mode='html')
 
 
 @dp.message_handler(lambda message: message.text == 'Технический профиль 🛠💻')
 async def loc_m(message):
     tel_id = message.chat.id
-    await UsersDbManager.update_prof_a(tel_id, message.text[:-2], loop)
-    text = f'<b>Выберете предмет</b> 👌'
-    await bot.send_message(tel_id, text=text, reply_markup=mk1.predm(message.text[:-3]), disable_notification=True,
-                           parse_mode='html')
+    context = await UsersDbManager.get_context_a(tel_id, loop)
+    if context == 'wait_prof':
+        await bot.send_message(tel_id, text='Профиль добавлен!', reply_markup=mk.main_menu)
+        await UsersDbManager.update_prof_a(tel_id, message.text[:-2], loop)
+        await UsersDbManager.update_context_a(tel_id, '', loop)
+    elif context == 'wait_new_prof':
+        text = f'<b>Выберете предмет</b> 👌'
+        await bot.send_message(tel_id, text=text, reply_markup=mk1.predm(message.text[:-2]), disable_notification=True,
+                               parse_mode='html')
+    else:
+        await UsersDbManager.update_prof_a(tel_id, message.text[:-2], loop)
+        text = f'<b>Выберете предмет</b> 👌'
+        await bot.send_message(tel_id, text=text, reply_markup=mk1.predm(message.text[:-2]), disable_notification=True,
+                               parse_mode='html')
 
 
 @dp.message_handler(lambda message: message.text == 'Гуманитарные предметы 👩‍🎓')
 async def loc_m(message):
     tel_id = message.chat.id
-    await UsersDbManager.update_prof_a(tel_id, message.text[:-3], loop)
-    text = f'<b>Выберете предмет</b> 👌'
-    await bot.send_message(tel_id, text=text, reply_markup=mk1.predm(message.text[:-3]), disable_notification=True,
-                           parse_mode='html')
+    context = await UsersDbManager.get_context_a(tel_id, loop)
+    if context == 'wait_prof':
+        await bot.send_message(tel_id, text='Профиль добавлен!', reply_markup=mk.main_menu)
+        await UsersDbManager.update_prof_a(tel_id, message.text[:-3], loop)
+        await UsersDbManager.update_context_a(tel_id, '', loop)
+    elif context == 'wait_new_prof':
+        text = f'<b>Выберете предмет</b> 👌'
+        await bot.send_message(tel_id, text=text, reply_markup=mk1.predm(message.text[:-3]), disable_notification=True,
+                               parse_mode='html')
+    else:
+        await UsersDbManager.update_prof_a(tel_id, message.text[:-3], loop)
+        text = f'<b>Выберете предмет</b> 👌'
+        await bot.send_message(tel_id, text=text, reply_markup=mk1.predm(message.text[:-3]), disable_notification=True,
+                               parse_mode='html')
 
 
 @dp.message_handler(lambda message: message.text == 'Экономические дисциплины 📊')
 async def loc_m(message):
     tel_id = message.chat.id
-    await UsersDbManager.update_prof_a(tel_id, message.text[:-1], loop)
-    text = f'<b>Выберете предмет</b> 👌'
-    await bot.send_message(tel_id, text=text, reply_markup=mk1.predm(message.text[:-3]), disable_notification=True,
-                           parse_mode='html')
+    context = await UsersDbManager.get_context_a(tel_id, loop)
+    if context == 'wait_prof':
+        await bot.send_message(tel_id, text='Профиль добавлен!', reply_markup=mk.main_menu)
+        await UsersDbManager.update_prof_a(tel_id, message.text[:-1], loop)
+        await UsersDbManager.update_context_a(tel_id, '', loop)
+    elif context == 'wait_new_prof':
+        text = f'<b>Выберете предмет</b> 👌'
+        await bot.send_message(tel_id, text=text, reply_markup=mk1.predm(message.text[:-1]), disable_notification=True,
+                               parse_mode='html')
+    else:
+        await UsersDbManager.update_prof_a(tel_id, message.text[:-1], loop)
+        text = f'<b>Выберете предмет</b> 👌'
+        await bot.send_message(tel_id, text=text, reply_markup=mk1.predm(message.text[:-1]), disable_notification=True,
+                               parse_mode='html')
 
 
 @dp.message_handler(lambda message: message.text == 'Языки 🗣')
 async def loc_m(message):
     tel_id = message.chat.id
-    await UsersDbManager.update_prof_a(tel_id, message.text[:-1], loop)
-    text = f'<b>Выберете предмет</b> 👌'
-    await bot.send_message(tel_id, text=text, reply_markup=mk1.predm(message.text[:-3]), disable_notification=True,
-                           parse_mode='html')
+    context = await UsersDbManager.get_context_a(tel_id, loop)
+    if context == 'wait_prof':
+        await bot.send_message(tel_id, text='Профиль добавлен!', reply_markup=mk.main_menu)
+        await UsersDbManager.update_prof_a(tel_id, message.text[:-1], loop)
+        await UsersDbManager.update_context_a(tel_id, '', loop)
+    elif context == 'wait_new_prof':
+        text = f'<b>Выберете предмет</b> 👌'
+        await bot.send_message(tel_id, text=text, reply_markup=mk1.predm(message.text[:-1]), disable_notification=True,
+                               parse_mode='html')
+    else:
+        await UsersDbManager.update_prof_a(tel_id, message.text[:-1], loop)
+        text = f'<b>Выберете предмет</b> 👌'
+        await bot.send_message(tel_id, text=text, reply_markup=mk1.predm(message.text[:-1]), disable_notification=True,
+                               parse_mode='html')
 
 
 @dp.message_handler(lambda message: message.text == 'Право, юриспруденция ⚖️')
 async def loc_m(message):
     tel_id = message.chat.id
-    await UsersDbManager.update_prof_a(tel_id, message.text[:-1], loop)
-    await bot.send_message(tel_id, text=str(message.text), reply_markup=mk1.prof, disable_notification=True)
-    await bot.send_message(tel_id, text='<b>Выберете профиль</b>', reply_markup=mk.zav(), disable_notification=True,
-                           parse_mode='html')
+    context = await UsersDbManager.get_context_a(tel_id, loop)
+    if context == 'wait_prof':
+        await bot.send_message(tel_id, text='Профиль добавлен!', reply_markup=mk.main_menu)
+        await UsersDbManager.update_prof_a(tel_id, message.text[:-1], loop)
+        await UsersDbManager.update_context_a(tel_id, '', loop)
+    else:
+        await UsersDbManager.update_prof_a(tel_id, message.text[:-1], loop)
+        await bot.send_message(tel_id, text=str(message.text), reply_markup=mk1.prof, disable_notification=True)
+        await bot.send_message(tel_id, text='<b>Выберете профиль</b>', reply_markup=mk.zav(), disable_notification=True,
+                               parse_mode='html')
 
 
 @dp.message_handler(lambda message: message.text in mk1.a)
 async def loc_m(message):
     tel_id = message.chat.id
-    await UsersDbManager.update_predm_a(tel_id, message.text, loop)
-    await bot.send_message(tel_id, text=str(message.text), reply_markup=mk1.prof, disable_notification=True)
-    await bot.send_message(tel_id, text='<b>Выберете профиль</b>', reply_markup=mk.zav(), disable_notification=True,
-                           parse_mode='html')
+    context = await UsersDbManager.get_context_a(tel_id, loop)
+    if context == 'wait_prof':
+        await UsersDbManager.update_predm_a(tel_id, message.text, loop)
+        await bot.send_message(tel_id, text='Предмет добавлен!')
+        await UsersDbManager.update_context_a(tel_id, '', loop)
+    else:
+        await UsersDbManager.update_predm_a(tel_id, message.text, loop)
+        await bot.send_message(tel_id, text=str(message.text), reply_markup=mk1.prof, disable_notification=True)
+        await bot.send_message(tel_id, text='<b>Выберете профиль</b>', reply_markup=mk.zav(), disable_notification=True,
+                               parse_mode='html')
 
 
 @dp.message_handler(lambda message: message.text in mk1.t)
 async def loc_m(message):
     tel_id = message.chat.id
-    await UsersDbManager.update_predm_a(tel_id, message.text, loop)
-    await bot.send_message(tel_id, text=str(message.text), reply_markup=mk1.prof, disable_notification=True)
-    await bot.send_message(tel_id, text='<b>Выберете профиль</b>', reply_markup=mk.zav(), disable_notification=True,
-                           parse_mode='html')
+    context = await UsersDbManager.get_context_a(tel_id, loop)
+    if context == 'wait_new_prof':
+        await UsersDbManager.update_predm_a(tel_id, message.text, loop)
+        await bot.send_message(tel_id, text='Предмет добавлен!')
+        await UsersDbManager.update_context_a(tel_id, '', loop)
+    else:
+        await UsersDbManager.update_predm_a(tel_id, message.text, loop)
+        await bot.send_message(tel_id, text=str(message.text), reply_markup=mk1.prof, disable_notification=True)
+        await bot.send_message(tel_id, text='<b>Выберете профиль</b>', reply_markup=mk.zav(), disable_notification=True,
+                               parse_mode='html')
 
 
 @dp.message_handler(lambda message: message.text in mk1.g)
 async def loc_m(message):
     tel_id = message.chat.id
-    await UsersDbManager.update_predm_a(tel_id, message.text, loop)
-    await bot.send_message(tel_id, text=str(message.text), reply_markup=mk1.prof, disable_notification=True)
-    await bot.send_message(tel_id, text='<b>Выберете профиль</b>', reply_markup=mk.zav(), disable_notification=True,
-                           parse_mode='html')
+    context = await UsersDbManager.get_context_a(tel_id, loop)
+    if context == 'wait_new_prof':
+        await UsersDbManager.update_predm_a(tel_id, message.text, loop)
+        await bot.send_message(tel_id, text='Предмет добавлен!')
+        await UsersDbManager.update_context_a(tel_id, '', loop)
+    else:
+        await UsersDbManager.update_predm_a(tel_id, message.text, loop)
+        await bot.send_message(tel_id, text=str(message.text), reply_markup=mk1.prof, disable_notification=True)
+        await bot.send_message(tel_id, text='<b>Выберете профиль</b>', reply_markup=mk.zav(), disable_notification=True,
+                               parse_mode='html')
 
 
 @dp.message_handler(lambda message: message.text in mk1.e)
 async def loc_m(message):
     tel_id = message.chat.id
-    await UsersDbManager.update_predm_a(tel_id, message.text, loop)
-    await bot.send_message(tel_id, text=str(message.text), reply_markup=mk1.prof, disable_notification=True)
-    await bot.send_message(tel_id, text='<b>Выберете профиль</b>', reply_markup=mk.zav(), disable_notification=True,
-                           parse_mode='html')
+    context = await UsersDbManager.get_context_a(tel_id, loop)
+    if context == 'wait_new_prof':
+        await UsersDbManager.update_predm_a(tel_id, message.text, loop)
+        await bot.send_message(tel_id, text='Предмет добавлен!')
+        await UsersDbManager.update_context_a(tel_id, '', loop)
+    else:
+        await UsersDbManager.update_predm_a(tel_id, message.text, loop)
+        await bot.send_message(tel_id, text=str(message.text), reply_markup=mk1.prof, disable_notification=True)
+        await bot.send_message(tel_id, text='<b>Выберете профиль</b>', reply_markup=mk.zav(), disable_notification=True,
+                               parse_mode='html')
 
 
 @dp.message_handler(lambda message: message.text in mk1.l)
 async def loc_m(message):
     tel_id = message.chat.id
-    await UsersDbManager.update_predm_a(tel_id, message.text, loop)
-    await bot.send_message(tel_id, text=str(message.text), reply_markup=mk1.prof, disable_notification=True)
-    await bot.send_message(tel_id, text='<b>Выберете профиль</b>', reply_markup=mk.zav(), disable_notification=True,
-                           parse_mode='html')
+    context = await UsersDbManager.get_context_a(tel_id, loop)
+    if context == 'wait_new_prof':
+        await UsersDbManager.update_predm_a(tel_id, message.text, loop)
+        await bot.send_message(tel_id, text='Предмет добавлен!')
+        await UsersDbManager.update_context_a(tel_id, '', loop)
+    else:
+        await UsersDbManager.update_predm_a(tel_id, message.text, loop)
+        await bot.send_message(tel_id, text=str(message.text), reply_markup=mk1.prof, disable_notification=True)
+        await bot.send_message(tel_id, text='<b>Выберете профиль</b>', reply_markup=mk.zav(), disable_notification=True,
+                               parse_mode='html')
 
 
 @dp.callback_query_handler(lambda c: c.data.startswith('zaver'))
@@ -292,7 +377,27 @@ async def process_call(c):
 
 async def send_confirm(tel_id):
     # Подверждение отправляется кому-то там
+    author_info = await UsersDbManager.get_author(tel_id, loop)
+    text = f'Новый автор!\n\n' \
+           f'<b>ФИО:</b> {author_info[2]}\n' \
+           f'<b>Номер телефона:</b> {author_info[1]}\n' \
+           f'<b>Username:</b> {author_info[9]}\n' \
+           f'<b>ВУЗ:</b> {author_info[3]}\n' \
+           f'<b>Курс:</b> {author_info[4]}\n' \
+           f'<b>Профили:</b> {author_info[7]}\n' \
+           f'<b>Предметы:</b> {author_info[8]}\n' \
+           f'<b>Фото документа об образовании:</b>'
+    await bot.send_message(420404892, text=text,  parse_mode='html')
+    await bot.send_photo(420404892, photo=author_info[5],reply_markup=mk1.confirm_author(tel_id))
 
+
+@dp.callback_query_handler(lambda c: c.data.startswith('confa_'))
+async def process_call(c):
+    tel_id = c.message.chat.id
+    await bot.delete_message(tel_id, c.message.message_id-1)
+    await bot.delete_message(tel_id, c.message.message_id)
+
+    t_id = c.data[6:]
     text = '🎊 Успешная авторизация 🎊\n\n' \
            '🙌Оценивайте заказы\n' \
            '📝Выполняйте задания\n' \
@@ -300,8 +405,18 @@ async def send_confirm(tel_id):
            'Если у вас появились вопросы, свяжитесь с менеджером\n' \
            '⌨️ https://t.me/reshalaa_help\n' \
            '📱 +380634690637'
-    await bot.send_message(tel_id, text=text, reply_markup=mk.main_menu, disable_notification=True, parse_mode='html')
+    await bot.send_message(t_id, text=text, reply_markup=mk.main_menu, disable_notification=True, parse_mode='html')
     await UsersDbManager.update_context_a(tel_id, '', loop)
+
+
+@dp.callback_query_handler(lambda c: c.data.startswith('otka_'))
+async def process_call(c):
+    tel_id = c.message.chat.id
+    await bot.delete_message(tel_id, c.message.message_id)
+    t_id = c.data[4:]
+    text = 'К сожалению, менеджер компании Reshalaa не дал вам доступ к заказам'
+    await bot.send_message(t_id, text=text, reply_markup=mk.main_menu, disable_notification=True, parse_mode='html')
+    await UsersDbManager.delete_author(t_id, loop)
 
 
 @dp.message_handler(lambda message: message.text == 'Свободные заказы 📝')
@@ -470,6 +585,7 @@ async def loc_m(message):
 
 
 async def send_new_order(ord_id):
+    await UsersDbManager.insert_pays(ord_id, loop)
     order = await UsersDbManager.get_new_order(ord_id, loop)
     tel_id = order[1]
     user = await UsersDbManager.get_user(tel_id, loop)
@@ -483,6 +599,9 @@ async def send_new_order(ord_id):
            f'ВУЗ: {user[3]}' \
            f'\nПрикрипленные файлы:'
     authors = await UsersDbManager.get_authors(ord_id, loop)
+    await bot.send_message(493247603, text=text, reply_markup=mk.ord_1(order[0]), disable_notification=True,
+                           parse_mode='html')
+    await send_files(tel_id, order[0])
     for author in authors:
         await bot.send_message(author[0], text=text, reply_markup=mk.ord_1(order[0]), disable_notification=True,
                                parse_mode='html')
@@ -491,12 +610,9 @@ async def send_new_order(ord_id):
 
 async def confirm_order(tel_id, ord_id):
     order = await UsersDbManager.get_active_order(ord_id, loop)
-    print('order:', order)
     author_price = await UsersDbManager.get_author_price(ord_id, loop)
-    print('ap:', author_price)
 
     vuz = await UsersDbManager.get_user_vuz(order[1], loop)
-    print('vuz:', vuz)
     if str(order[2]) == 'Online решение' or str(order[2]) == 'Тест дистанционно':
         text = f'<b>Заказ №{ord_id} ваш!</b> 🚀\n\n' \
                f'✨ Заказ №{ord_id} ✨ \n\n' \
@@ -531,8 +647,9 @@ async def process_call(c):
     text = 'Пришлите фотографии или файлы с выполненным заданием. Когда отправите все необходимые файлы, нажмите Готово'
     await bot.send_message(tel_id, text=text, reply_markup=mk1.ok)
     await UsersDbManager.update_context_a(tel_id, 'wait_done', loop)
-    #await UsersDbManager.add_num_a(tel_id, ord_id, loop)
+    # await UsersDbManager.add_num_a(tel_id, ord_id, loop)
     await UsersDbManager.waito(ord_id, loop)
+
 
 @dp.message_handler(lambda message: message.text == 'Готово')
 async def loc_m(message):
@@ -541,6 +658,71 @@ async def loc_m(message):
     text = 'Решение отправлено на проверку!'
     await bot.send_message(tel_id, text=text)
 
+
+@dp.message_handler(lambda message: message.text == 'Редактировать профиль 🙌')
+async def loc_m(message):
+    tel_id = message.chat.id
+    text = 'Выберите что вы хотите отредактировать'
+    await bot.send_message(tel_id, text, disable_notification=True, reply_markup=mk1.author_red())
+    await UsersDbManager.update_context_a(tel_id, 'wait_red', loop)
+
+
+@dp.callback_query_handler(lambda c: c.data.startswith('num_c'))
+async def process_call(c):
+    tel_id = c.message.chat.id
+    text = 'Напишите номер карты:'
+    await bot.send_message(tel_id, text, disable_notification=True)
+    await UsersDbManager.update_context_a(tel_id, 'wait_new_card_num', loop)
+
+
+@dp.callback_query_handler(lambda c: c.data.startswith('prof_r'))
+async def process_call(c):
+    tel_id = c.message.chat.id
+    await bot.send_message(tel_id, text='Выберите профиль:', reply_markup=mk1.prof, disable_notification=True)
+    await UsersDbManager.update_context_a(tel_id, 'wait_prof', loop)
+
+
+@dp.callback_query_handler(lambda c: c.data.startswith('predm_r'))
+async def process_call(c):
+    tel_id = c.message.chat.id
+    await bot.send_message(tel_id, text='Выберите предмет:', reply_markup=mk1.prof, disable_notification=True)
+    await UsersDbManager.update_context_a(tel_id, 'wait_prof', loop)
+
+
+@dp.message_handler(lambda message:
+                    UsersDbManager.sync_get_context_a(message.chat.id) == 'wait_new_card_num')
+async def wait_name(message):
+    tel_id = message.chat.id
+    num = message.text
+    await bot.send_message(tel_id, text='Номер карты изменен!', disable_notification=True)
+    await UsersDbManager.update_context_a(tel_id, '', loop)
+    await UsersDbManager.update_card_a(tel_id, num, loop)
+
+
+@dp.message_handler(lambda message: message.text == 'Мой рейтинг 📊')
+async def loc_m(message):
+    tel_id = message.chat.id
+    rate = await UsersDbManager.get_rate(tel_id, loop)
+    if rate[0] == None:
+        rate = 'Еще нет оценок!'
+    text = f'Ваш рейтинг: {rate}'
+    await bot.send_message(tel_id, text=text, disable_notification=True)
+
+
+@dp.message_handler(lambda message: message.text == 'Мои средства 💸')
+async def loc_m(message):
+    tel_id = message.chat.id
+    balance = await UsersDbManager.get_balance(tel_id, loop)
+    text = f'На вашем счету {balance[0]} грн'
+    await bot.send_message(tel_id, text=text, disable_notification=True)
+
+@dp.message_handler(lambda message: message.text == 'Связь с менеджером 📱')
+async def loc_m(message):
+    tel_id = message.chat.id
+    text = 'Если у вас появились вопросы, свяжитесь с менеджером\n' \
+           '⌨️ https://t.me/reshalaa_help\n' \
+           '📱 +380634690637'
+    await bot.send_message(tel_id, text=text, reply_markup=mk.main_menu, disable_notification=True, parse_mode='html')
 
 if __name__ == '__main__':
     executor.start_polling(dp, skip_updates=True)
